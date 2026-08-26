@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Motor y Distribución - La Casa del Repuesto</title>
+    <title>Baterias - La Casa del Repuesto</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -244,7 +244,7 @@ body.theme-blue {
   --bg-sidebar: #5073a9;
   --text-sidebar: #ffffff;
 }
-    
+
 /* --- CORRECCIÓN DE TARJETAS Y FONDOS EN MODO OSCURO --- */
 
 /* Arreglo para que el body cambie de color de verdad */
@@ -310,7 +310,7 @@ body.theme-blue {
         <img id="lightboxImg" src="" alt="Imagen en grande">
     </div>
 
-    <h1>🏎️ Motor y Distribución</h1>
+    <h1>🪫 Baterias</h1>
     <p>Revisá nuestras opciones disponibles en inventario:</p>
 
     <div id="contenedorProductos" class="catalogo-grid">
@@ -350,13 +350,13 @@ body.theme-blue {
 
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        async function cargarmotorydistribuicion() {
+        async function cargarbaterias() {
             const contenedor = document.getElementById('contenedorProductos');
 
             const { data: productos, error } = await db
                 .from('productos')
                 .select('*')
-                .eq('categoria', 'motorydistribuicion')
+                .eq('categoria', 'baterias')
                 .order('id', { ascending: false });
 
             if (error) {
@@ -366,7 +366,7 @@ body.theme-blue {
             }
 
             if (productos.length === 0) {
-                contenedor.innerHTML = "<p>No hay motores y distribuciones registrados en este momento.</p>";
+                contenedor.innerHTML = "<p>No hay baterias registradas en este momento.</p>";
                 return;
             }
 
@@ -396,7 +396,7 @@ body.theme-blue {
             });
         }
 
-        cargarmotorydistribuicion();
+        cargarbaterias();
 
         function ampliarImagen(url) {
             const overlay = document.getElementById('lightboxOverlay');
