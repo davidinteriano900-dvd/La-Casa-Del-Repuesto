@@ -6,6 +6,21 @@
     <title>Categorías - La Casa del Repuesto</title>
     
     <style>
+        .btn-sidebar-toggle {
+  position: fixed; /* Esto hace que floté y no se estire */
+  top: 15px;
+  left: 15px;
+  width: auto;     /* Asegura que tome solo el tamaño de las 3 rayitas */
+  z-index: 999;
+  background-color: var(--primary, #c1121f);
+  color: white;
+  border: none;
+  font-size: 22px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
         body {
             background-color: #eadfdf;
             font-family: 'Arial', sans-serif; 
