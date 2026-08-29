@@ -3,34 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Motor y Distribución - La Casa del Repuesto</title>
+    <title>Motores y Distribución - La Casa del Repuesto</title>
+    
+    <!-- SCRIPT ANTI-PARPADEO -->
     <script>
-  (function() {
-    const savedTheme = localStorage.getItem('selectedTheme');
-    if (savedTheme && savedTheme !== 'light') {
-      document.documentElement.classList.add('theme-' + savedTheme);
-    }
-  })();
-</script>
+      (function() {
+        const savedTheme = localStorage.getItem('selectedTheme');
+        if (savedTheme && savedTheme !== 'light') {
+          document.documentElement.classList.add('theme-' + savedTheme);
+        }
+      })();
+    </script>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
+        /* --- VARIABLES BASE (MODO CLARO POR DEFECTO) --- */
+        :root {
+            --bg-body: #f4f6f9;
+            --bg-card: #ffffff;
+            --text-color: #333333;
+            --text-muted: #666666;
+            --bg-sidebar: #ffffff;
+            --text-sidebar: #333333;
+        }
+
+        /* --- VARIABLES POR TEMA (Aplicadas a HTML) --- */
+        html.theme-dark {
+            --bg-body: #121212;
+            --bg-card: #1e1e1e;
+            --text-color: #f5f5f5;
+            --text-muted: #b0b0b0;
+            --bg-sidebar: #1e1e1e;
+            --text-sidebar: #ffffff;
+        }
+
+        html.theme-coffee {
+            --bg-body: #2b1b17;
+            --bg-card: #3e2723;
+            --text-color: #efebe9;
+            --text-muted: #d7ccc8;
+            --bg-sidebar: #3e2723;
+            --text-sidebar: #efebe9;
+        }
+
+        html.theme-blue {
+            --bg-body: #1a2332;
+            --bg-card: #243044;
+            --text-color: #e6f1ff;
+            --text-muted: #8892b0;
+            --bg-sidebar: #243044;
+            --text-sidebar: #ffffff;
+        }
+
+        /* ESTILOS DEL CUERPO (Ya no tienen colores fijos 'white') */
         body {
-            background-color: #f4f6f9;
+            background-color: var(--bg-body) !important;
+            color: var(--text-color) !important;
             font-family: 'Arial', sans-serif;
             margin: 40px auto;
             max-width: 600px;
             padding: 20px;
-            background: white;
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: background-color 0.2s ease, color 0.2s ease;
         }
 
         h1 {
             color: #d93838;
             text-align: center;
             font-size: 28px;
+        }
+
+        p {
+            color: var(--text-muted);
         }
 
         .catalogo-grid {
@@ -40,26 +86,38 @@
             margin-top: 20px;
         }
 
+        /* TARJETAS DE PRODUCTO DENTRO DEL TEMA */
         .card-producto {
-            background: #fff;
-            border: 1px solid #eee;
+            background-color: var(--bg-card) !important;
+            color: var(--text-color) !important;
+            border: 1px solid rgba(255,255,255,0.08);
             border-radius: 8px;
             padding: 15px;
             text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+        }
+
+        .card-producto h4 {
+            color: var(--text-color) !important;
+        }
+
+        .card-producto p {
+            color: var(--text-muted) !important;
         }
 
         .card-producto img {
             width: 100%;
             height: 180px; 
             object-fit: contain; 
-            background-color: #f9f9f9; 
+            background-color: #ffffff; 
             border-radius: 6px;
             margin-bottom: 10px;
             cursor: pointer; 
+            padding: 5px;
+            box-sizing: border-box;
         }
 
         .btn-agregar {
@@ -130,184 +188,120 @@
             cursor: pointer;
             line-height: 1;
         }
-          /* --- BOTÓN FLOTANTE DEL MENÚ --- */
-.btn-sidebar-toggle {
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  z-index: 999;
-  background-color: var(--primary, #c1121f);
-  color: white;
-  border: none;
-  font-size: 22px;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-  transition: transform 0.2s ease;
-}
-.btn-sidebar-toggle:hover {
-  transform: scale(1.05);
-}
 
-/* --- PANEL LATERAL Y OVERLAY --- */
-.sidebar-overlay {
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.5);
-  z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-.sidebar-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
+        /* --- BOTÓN FLOTANTE DEL MENÚ --- */
+        .btn-sidebar-toggle {
+          position: fixed;
+          top: 15px;
+          left: 15px;
+          z-index: 999;
+          background-color: var(--primary, #c1121f);
+          color: white;
+          border: none;
+          font-size: 22px;
+          padding: 8px 14px;
+          border-radius: 8px;
+          cursor: pointer;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+          transition: transform 0.2s ease;
+        }
 
-.sidebar-panel {
-  position: fixed;
-  top: 0;
-  left: -300px; /* Oculto a la izquierda */
-  width: 280px;
-  height: 100%;
-  background-color: var(--bg-sidebar, #ffffff);
-  color: var(--text-sidebar, #333333);
-  z-index: 1001;
-  box-shadow: 4px 0 15px rgba(0,0,0,0.3);
-  transition: left 0.3s ease;
-  display: flex;
-  flex-direction: column;
-}
-.sidebar-panel.active {
-  left: 0; /* Aparece en pantalla */
-}
+        .btn-sidebar-toggle:hover {
+          transform: scale(1.05);
+        }
 
-/* Header del Sidebar */
-.sidebar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18px 20px;
-  border-bottom: 1px solid rgba(0,0,0,0.1);
-}
-.sidebar-header h3 { margin: 0; font-size: 20px; }
-.btn-close {
-  background: none; border: none; font-size: 28px;
-  cursor: pointer; color: inherit;
-}
+        /* --- PANEL LATERAL Y OVERLAY --- */
+        .sidebar-overlay {
+          position: fixed;
+          top: 0; left: 0; width: 100%; height: 100%;
+          background: rgba(0,0,0,0.5);
+          z-index: 1000;
+          opacity: 0;
+          visibility: hidden;
+          transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
 
-/* Contenido del Sidebar */
-.sidebar-content { padding: 20px; overflow-y: auto; }
-.sidebar-section h4 { margin-top: 0; font-size: 14px; text-transform: uppercase; color: #888; letter-spacing: 1px; }
-.sidebar-menu { list-style: none; padding: 0; margin: 15px 0; }
-.sidebar-menu li { margin-bottom: 12px; }
-.sidebar-menu a {
-  text-decoration: none;
-  color: inherit;
-  font-weight: bold;
-  font-size: 15px;
-  display: block;
-  padding: 8px 10px;
-  border-radius: 6px;
-  transition: background 0.2s;
-}
-.sidebar-menu a:hover { background: rgba(0,0,0,0.06); }
-.sidebar-divider { border: none; border-top: 1px solid rgba(0,0,0,0.1); margin: 20px 0; }
+        .sidebar-overlay.active {
+          opacity: 1;
+          visibility: visible;
+        }
 
-/* Botones de Temas */
-.theme-subtitle { font-size: 13px; color: #666; margin-bottom: 10px; }
-.theme-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.btn-theme {
-  border: none;
-  padding: 10px;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 13px;
-  transition: opacity 0.2s;
-}
-.btn-theme:hover { opacity: 0.85; }
-.theme-light { background-color: #f4f6f8; color: #333; border: 1px solid #ccc; }
-.theme-dark { background-color: #1e1e1e; color: #fff; }
-.theme-coffee { background-color: #4a2822; color: #d7ccc8; }
-.theme-blue { background-color: #5073a9; color: #e3f2fd; }
+        .sidebar-panel {
+          position: fixed;
+          top: 0;
+          left: -300px;
+          width: 280px;
+          height: 100%;
+          background-color: var(--bg-sidebar);
+          color: var(--text-sidebar);
+          z-index: 1001;
+          box-shadow: 4px 0 15px rgba(0,0,0,0.3);
+          transition: left 0.3s ease;
+          display: flex;
+          flex-direction: column;
+        }
 
-/* --- TEMAS (Variables Globales de Color) --- */
-body.theme-dark {
-  background-color: #121212 !important;
-  color: #e0e0e0 !important;
-  --bg-sidebar: #1e1e1e;
-  --text-sidebar: #ffffff;
-}
-body.theme-coffee {
-  background-color: #2b1b17 !important;
-  color: #d7ccc8 !important;
-  --bg-sidebar: #3e2723;
-  --text-sidebar: #efebe9;
-}
-body.theme-blue {
-  background-color: #5073a9 !important;
-  color: #e6f1ff !important;
-  --bg-sidebar: #5073a9;
-  --text-sidebar: #ffffff;
-}
-    
-/* --- CORRECCIÓN DE TARJETAS Y FONDOS EN MODO OSCURO --- */
+        .sidebar-panel.active {
+          left: 0;
+        }
 
-/* Arreglo para que el body cambie de color de verdad */
-body {
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
+        .sidebar-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 18px 20px;
+          border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
 
-/* Tarjetas de productos ajustadas a la clase real de tu HTML */
-.card-producto { 
-  background-color: var(--card-bg, #ffffff) !important;
-  color: var(--card-text, #333333) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
+        .sidebar-header h3 { margin: 0; font-size: 20px; }
 
-/* Títulos, textos y precios dentro de la tarjeta */
-.card-producto h4, 
-.card-producto p, 
-.card-producto strong {
-  color: inherit !important;
-}
+        .btn-close {
+          background: none; border: none; font-size: 28px;
+          cursor: pointer; color: inherit;
+        }
 
-/* Fondo de la imagen para que no encandile en modo oscuro */
-.card-producto img {
-  background-color: rgba(0,0,0,0.05);
-}
+        .sidebar-content { padding: 20px; overflow-y: auto; }
+        .sidebar-section h4 { margin-top: 0; font-size: 14px; text-transform: uppercase; color: #888; letter-spacing: 1px; }
+        .sidebar-menu { list-style: none; padding: 0; margin: 15px 0; }
+        .sidebar-menu li { margin-bottom: 12px; }
+        .sidebar-menu a {
+          text-decoration: none;
+          color: inherit;
+          font-weight: bold;
+          font-size: 15px;
+          display: block;
+          padding: 8px 10px;
+          border-radius: 6px;
+          transition: background 0.2s;
+        }
 
-/* Fondo del modal del carrito adaptado */
-#modal-carrito > div {
-  background-color: var(--card-bg, #ffffff) !important;
-  color: var(--card-text, #333333) !important;
-}
+        .sidebar-menu a:hover { background: rgba(0,0,0,0.06); }
+        .sidebar-divider { border: none; border-top: 1px solid rgba(0,0,0,0.1); margin: 20px 0; }
 
-/* --- ADAPTACIÓN POR TEMAS --- */
+        /* Botones de Temas */
+        .theme-subtitle { font-size: 13px; color: #888; margin-bottom: 10px; }
+        .theme-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .btn-theme {
+          border: none;
+          padding: 10px;
+          border-radius: 6px;
+          font-weight: bold;
+          cursor: pointer;
+          font-size: 13px;
+          transition: opacity 0.2s;
+        }
 
-/* MODO OSCURO */
-body.theme-dark {
-  background-color: #121212 !important;
-  --card-bg: #1e1e1e;
-  --card-text: #ffffff;
-}
+        .btn-theme:hover { opacity: 0.85; }
+        .theme-light { background-color: #f4f6f8; color: #333; border: 1px solid #ccc; }
+        .theme-dark { background-color: #1e1e1e; color: #fff; }
+        .theme-coffee { background-color: #4a2822; color: #d7ccc8; }
+        .theme-blue { background-color: #5073a9; color: #e3f2fd; }
 
-/* MODO CAFÉ */
-body.theme-coffee {
-  background-color: #2b1b17 !important;
-  --card-bg: #3e2723;
-  --card-text: #fff8e1;
-}
-
-/* MODO AZUL */
-body.theme-blue {
-  background-color: #1a2332 !important;
-  --card-bg: #243044;
-  --card-text: #e6f1ff;
-}
+        /* MODAL DEL CARRITO ADAPTADO */
+        #modal-carrito > div {
+          background-color: var(--bg-card) !important;
+          color: var(--text-color) !important;
+        }
     </style>
 </head>
 <body>
@@ -318,7 +312,7 @@ body.theme-blue {
         <img id="lightboxImg" src="" alt="Imagen en grande">
     </div>
 
-    <h1>🏎️ Motor y Distribución</h1>
+    <h1>🛢️ Aceites y Lubricantes</h1>
     <p>Revisá nuestras opciones disponibles en inventario:</p>
 
     <div id="contenedorProductos" class="catalogo-grid">
@@ -334,7 +328,7 @@ body.theme-blue {
 
     <!-- MODAL DEL CARRITO -->
     <div id="modal-carrito" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1001;">
-      <div style="background:#fff; width:90%; max-width:400px; margin:100px auto; padding:20px; border-radius:8px; position:relative;">
+      <div style="width:90%; max-width:400px; margin:100px auto; padding:20px; border-radius:8px; position:relative;">
         <span onclick="document.getElementById('modal-carrito').style.display='none'" style="position:absolute; right:15px; top:10px; cursor:pointer; font-size:20px; font-weight:bold;">&times;</span>
         
         <h2 style="margin-top:0;">Tu Pedido</h2>
@@ -374,7 +368,7 @@ body.theme-blue {
             }
 
             if (productos.length === 0) {
-                contenedor.innerHTML = "<p>No hay motores y distribuciones registrados en este momento.</p>";
+                contenedor.innerHTML = "<p>No hay productos registrados en este momento.</p>";
                 return;
             }
 
@@ -382,8 +376,6 @@ body.theme-blue {
 
             productos.forEach(prod => {
                 const mensajeWA = encodeURIComponent(`Hola, me interesa el producto: ${prod.nombre}`);
-                
-                // Si prod.precio no existe en Supabase, usa 0
                 const precioProd = prod.precio ? prod.precio : 0; 
 
                 contenedor.innerHTML += `
@@ -393,7 +385,6 @@ body.theme-blue {
                         <p>${prod.descripcion || ''}</p>
                         <p><strong>Q${precioProd}</strong></p>
                         
-                        <!-- BOTÓN DINÁMICO CONECTADO A SUPABASE -->
                         <button class="btn-agregar" onclick="agregarAlCarrito(${prod.id}, '${prod.nombre}', ${precioProd}, '${prod.imagen_url}')">
                             Agregar al carrito
                         </button>
@@ -420,82 +411,77 @@ body.theme-blue {
     </script>
     
     <script src="carrito.js"></script>
-      <!-- Botón Flotante para Abrir el Menú Lateral -->
-<button id="btn-open-sidebar" class="btn-sidebar-toggle" title="Menú de opciones">
-  ☰
-</button>
 
-<!-- Fondo Oscuro transparente cuando el panel se abre -->
-<div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <!-- Botón Flotante para Abrir el Menú Lateral -->
+    <button id="btn-open-sidebar" class="btn-sidebar-toggle" title="Menú de opciones">
+      ☰
+    </button>
 
-<!-- Menú Lateral (Sidebar) -->
-<aside id="sidebar-panel" class="sidebar-panel">
-  <div class="sidebar-header">
-    <h3>Menú</h3>
-    <button id="btn-close-sidebar" class="btn-close">&times;</button>
-  </div>
+    <!-- Fondo Oscuro transparente cuando el panel se abre -->
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
-  <div class="sidebar-content">
-    <!-- SECCIÓN DE CATEGORÍAS -->
-    <div class="sidebar-section">
-      <h4>Categorías</h4>
-      <ul class="sidebar-menu">
-        <li><a href="index.html">🏠 Inicio / Todos</a></li>
-         <li><a href="categorias.html">📋 Categorías</a></li>
-        <li><a href="aceitesylubricantes.html">🛢️ Aceites y Lubricantes</a></li>
-        <li><a href="sistemasdefrenos.html">🛞 Sistemas de Frenos</a></li>
-        <li><a href="motorydistribuicion.html">🏎️ Motor y Distribución</a></li>
-        <li><a href="suspensionyshocks.html">🛻 Suspensión y Shocks</a></li>
-        <li><a href="baterias.html">🔋 Baterías</a></li>
-        <!-- Agregá las demás categorías que tengás aquí -->
-      </ul>
-    </div>
-
-    <hr class="sidebar-divider">
-
-    <!-- SECCIÓN DE PREFERENCIAS / TEMAS -->
-    <div class="sidebar-section">
-      <h4>Apariencia</h4>
-      <p class="theme-subtitle">Seleccioná un tema:</p>
-      <div class="theme-buttons">
-        <button class="btn-theme theme-light" onclick="setTheme('light')">☀️ Claro</button>
-        <button class="btn-theme theme-dark" onclick="setTheme('dark')">🌙 Oscuro</button>
-        <button class="btn-theme theme-coffee" onclick="setTheme('coffee')">☕ Café</button>
-        <button class="btn-theme theme-blue" onclick="setTheme('blue')">🌊 Azul</button>
+    <!-- Menú Lateral (Sidebar) -->
+    <aside id="sidebar-panel" class="sidebar-panel">
+      <div class="sidebar-header">
+        <h3>Menú</h3>
+        <button id="btn-close-sidebar" class="btn-close">&times;</button>
       </div>
-    </div>
-  </div>
-</aside>
+
+      <div class="sidebar-content">
+        <div class="sidebar-section">
+          <h4>Categorías</h4>
+          <ul class="sidebar-menu">
+            <li><a href="index.html">🏠 Inicio / Todos</a></li>
+            <li><a href="categorias.html">📋 Categorías</a></li>
+            <li><a href="aceitesylubricantes.html">🛢️ Aceites y Lubricantes</a></li>
+            <li><a href="sistemasdefrenos.html">🛞 Sistemas de Frenos</a></li>
+            <li><a href="motorydistribuicion.html">🏎️ Motor y Distribución</a></li>
+            <li><a href="suspensionyshocks.html">🛵 Suspensión y Shocks</a></li>
+            <li><a href="baterias.html">🔋 Baterías</a></li>
+          </ul>
+        </div>
+
+        <hr class="sidebar-divider">
+
+        <div class="sidebar-section">
+          <h4>Apariencia</h4>
+          <p class="theme-subtitle">Seleccioná un tema:</p>
+          <div class="theme-buttons">
+            <button class="btn-theme theme-light" onclick="setTheme('light')">☀️ Claro</button>
+            <button class="btn-theme theme-dark" onclick="setTheme('dark')">🌙 Oscuro</button>
+            <button class="btn-theme theme-coffee" onclick="setTheme('coffee')">☕ Café</button>
+            <button class="btn-theme theme-blue" onclick="setTheme('blue')">🌊 Azul</button>
+          </div>
+        </div>
+      </div>
+    </aside>
     
-<script>
-  // Control de apertura y cierre del panel lateral
-  const openBtn = document.getElementById('btn-open-sidebar');
-  const closeBtn = document.getElementById('btn-close-sidebar');
-  const sidebar = document.getElementById('sidebar-panel');
-  const overlay = document.getElementById('sidebar-overlay');
+    <script>
+      const openBtn = document.getElementById('btn-open-sidebar');
+      const closeBtn = document.getElementById('btn-close-sidebar');
+      const sidebar = document.getElementById('sidebar-panel');
+      const overlay = document.getElementById('sidebar-overlay');
 
-  openBtn.addEventListener('click', () => {
-    sidebar.classList.add('active');
-    overlay.classList.add('active');
-  });
+      openBtn.addEventListener('click', () => {
+        sidebar.classList.add('active');
+        overlay.classList.add('active');
+      });
 
-  function closeSidebar() {
-    sidebar.classList.remove('active');
-    overlay.classList.remove('active');
-  }
+      function closeSidebar() {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+      }
 
-  closeBtn.addEventListener('click', closeSidebar);
-  overlay.addEventListener('click', closeSidebar);
+      closeBtn.addEventListener('click', closeSidebar);
+      overlay.addEventListener('click', closeSidebar);
 
-  // Función para cambiar de Tema aplicada al <html> (evita parpadeos)
-  function setTheme(themeName) {
-    document.documentElement.classList.remove('theme-dark', 'theme-coffee', 'theme-blue');
-    if (themeName !== 'light') {
-      document.documentElement.classList.add('theme-' + themeName);
-    }
-    // Guardar preferencia en el navegador
-    localStorage.setItem('selectedTheme', themeName);
-  }
-</script>
+      function setTheme(themeName) {
+        document.documentElement.classList.remove('theme-dark', 'theme-coffee', 'theme-blue');
+        if (themeName !== 'light') {
+          document.documentElement.classList.add('theme-' + themeName);
+        }
+        localStorage.setItem('selectedTheme', themeName);
+      }
+    </script>
 </body>
 </html>
