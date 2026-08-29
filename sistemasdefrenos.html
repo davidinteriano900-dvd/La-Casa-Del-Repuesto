@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistemas de Frenos - La Casa del Repuesto</title>
+    <title>Sistema de Frenos - La Casa del Repuesto</title>
     
     <!-- SCRIPT ANTI-PARPADEO -->
     <script>
@@ -312,7 +312,7 @@
         <img id="lightboxImg" src="" alt="Imagen en grande">
     </div>
 
-    <h1>🛢️ Aceites y Lubricantes</h1>
+    <h1>🛞 Sistema de Frenos</h1>
     <p>Revisá nuestras opciones disponibles en inventario:</p>
 
     <div id="contenedorProductos" class="catalogo-grid">
@@ -352,13 +352,13 @@
 
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        async function cargarsistemasdefrenos() {
+        async function cargarsistemadefrenos() {
             const contenedor = document.getElementById('contenedorProductos');
 
             const { data: productos, error } = await db
                 .from('productos')
                 .select('*')
-                .eq('categoria', 'sistemasdefrenos')
+                .eq('categoria', 'sistemadefrenos')
                 .order('id', { ascending: false });
 
             if (error) {
@@ -395,7 +395,7 @@
             });
         }
 
-        cargarsistemasdefrenos();
+        cargarsistemadefrenos();
 
         function ampliarImagen(url) {
             const overlay = document.getElementById('lightboxOverlay');
