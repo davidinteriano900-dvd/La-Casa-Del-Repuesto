@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aceites y Lubricantes - La Casa del Repuesto</title>
+    <script>
+  (function() {
+    const savedTheme = localStorage.getItem('selectedTheme');
+    if (savedTheme && savedTheme !== 'light') {
+      document.documentElement.classList.add('theme-' + savedTheme);
+    }
+  })();
+</script>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -480,20 +488,14 @@ body.theme-blue {
   closeBtn.addEventListener('click', closeSidebar);
   overlay.addEventListener('click', closeSidebar);
 
-  // Función para cambiar de Tema (Claro, Oscuro, Café, Azul)
+  // Función para cambiar de Tema aplicada al <html> (evita parpadeos)
   function setTheme(themeName) {
-    document.body.classList.remove('theme-dark', 'theme-coffee', 'theme-blue');
+    document.documentElement.classList.remove('theme-dark', 'theme-coffee', 'theme-blue');
     if (themeName !== 'light') {
-      document.body.classList.add('theme-' + themeName);
+      document.documentElement.classList.add('theme-' + themeName);
     }
     // Guardar preferencia en el navegador
     localStorage.setItem('selectedTheme', themeName);
-  }
-
-  // Cargar el tema guardado anteriormente (si existe)
-  const savedTheme = localStorage.getItem('selectedTheme');
-  if (savedTheme) {
-    setTheme(savedTheme);
   }
 </script>
 </body>
