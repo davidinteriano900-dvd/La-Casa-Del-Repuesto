@@ -64,7 +64,7 @@
         }
 
         h2 {
-            color: #555;
+            color: #555555;
             text-align: center;
             font-size: 18px;
             font-weight: normal;
@@ -109,7 +109,7 @@
         }
 
         .card-producto h4 {
-            color: #333;
+            color: #333333;
             margin-bottom: 5px;
         }
 
@@ -247,6 +247,50 @@
           --bg-sidebar: #5073a9;
           --text-sidebar: #ffffff;
         }
+       #btn-close-sidebar {
+  font-size: 22px !important;
+  width: 40px !important;
+  height: 40px !important;
+  line-height: 1 !important;
+  box-sizing: border-box !important;
+  background: transparent !important;
+  /* Se adapta al color de texto principal del tema activo */
+  color: currentColor !important; 
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+#btn-close-sidebar:hover {
+  opacity: 1;
+
+}
+/* Adaptación de tarjetas al Tema Activo */
+html.theme-dark .card-producto,
+html.theme-dark #modal-carrito > div {
+  background-color: #1e1e1e !important;
+  border-color: #333 !important;
+  color: #fff !important;
+}
+
+html.theme-coffee .card-producto,
+html.theme-coffee #modal-carrito > div {
+  background-color: #3e2723 !important;
+  border-color: #4e342e !important;
+  color: #efebe9 !important;
+}
+
+html.theme-blue .card-producto,
+html.theme-blue #modal-carrito > div {
+  background-color: #3b5998 !important;
+  border-color: #2d4373 !important;
+  color: #fff !important;
+}
+
+/* Cambiar color de títulos dentro de las cards en modo oscuro */
+html:not(.theme-light) .card-producto h4 {
+  color: inherit !important;
+}
+
     </style>
 
 </head>
@@ -309,6 +353,7 @@
 <aside id="sidebar-panel" class="sidebar-panel">
   <div class="sidebar-header">
     <h3>Menú</h3>
+  
     <button id="btn-close-sidebar" class="btn-close">&times;</button>
   </div>
 

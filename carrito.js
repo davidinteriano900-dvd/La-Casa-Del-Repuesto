@@ -95,12 +95,11 @@ function enviarPedidoWhatsApp(numeroTel) {
 document.addEventListener('DOMContentLoaded', actualizarVistaCarrito);
 
 // ==========================================
-// BUSCADOR GLOBAL "TODO TERRENO" (A prueba de fallos)
+// BUSCADOR GLOBAL "TODO TERRENO" (Cierre automático)
 // ==========================================
 
 let cacheProductos = []; 
 
-// Función para quitar tildes y dejar todo en minúsculas
 function normalizar(texto) {
   if (!texto) return "";
   return texto.toLowerCase()
@@ -108,7 +107,6 @@ function normalizar(texto) {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
-// Cargar productos con re-intento si Supabase tarda
 async function cargarCacheProductos() {
   if (typeof db !== 'undefined') {
     try {
@@ -122,7 +120,7 @@ async function cargarCacheProductos() {
 cargarCacheProductos();
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. CREAR EL BOTÓN (LUPA)
+  // 1. BOTÓN FLOTANTE (LUPA)
   const btnBuscador = document.createElement('div');
   btnBuscador.id = 'btn-buscador-flotante';
   btnBuscador.innerHTML = '🔍';
@@ -132,8 +130,8 @@ document.addEventListener('DOMContentLoaded', () => {
     justify-content: center; font-size: 22px; cursor: pointer; z-index: 1000;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
   `;
-
-  // 2. CREAR LA CAJA DE RESULTADOS
+  
+  // 2. CAJA DE RESULTADOS
   const cajaBuscador = document.createElement('div');
   cajaBuscador.id = 'caja-buscador-flotante';
   cajaBuscador.style.cssText = `
@@ -143,7 +141,10 @@ document.addEventListener('DOMContentLoaded', () => {
   `;
 
   cajaBuscador.innerHTML = `
-    <input type="text" id="input-buscador-flotante" placeholder="🔍 Buscar repuesto..." style="width:100%; border:1px solid #ccc; outline:none; padding:8px 12px; font-size:14px; border-radius:20px; box-sizing:border-box;">
+    <div style="position: relative; display: flex; align-items: center;">
+      <input type="text" id="input-buscador-flotante" placeholder="🔍 Buscar repuesto..." style="width:100%; border:1px solid #ccc; outline:none; padding:8px 30px 8px 12px; font-size:14px; border-radius:20px; box-sizing:border-box;">
+      <span id="btn-limpiar-busqueda" style="display:none; position:absolute; right:10px; cursor:pointer; font-weight:bold; color:#888; font-size:16px;">&times;</span>
+    </div>
     <div id="resultados-busqueda" style="margin-top:10px;"></div>
   `;
 
@@ -151,22 +152,58 @@ document.addEventListener('DOMContentLoaded', () => {
   document.body.appendChild(cajaBuscador);
 
   const input = document.getElementById('input-buscador-flotante');
+  const btnLimpiar = document.getElementById('btn-limpiar-busqueda');
   const resultadosDiv = document.getElementById('resultados-busqueda');
 
-  // Abrir / Cerrar al clic
-  btnBuscador.addEventListener('click', async () => {
+  // Función genérica para CERRAR la caja de búsqueda
+  const cerrarBuscador = () => {
+    cajaBuscador.style.display = 'none';
+  };
+
+  // Abrir / Cerrar al dar clic a la Lupa
+  btnBuscador.addEventListener('click', async (e) => {
+    e.stopPropagation(); // Evita que el clic se detecte como "clic afuera"
     const visible = cajaBuscador.style.display === 'block';
-    cajaBuscador.style.display = visible ? 'none' : 'block';
-    if (!visible) {
+    
+    if (visible) {
+      cerrarBuscador();
+    } else {
+      cajaBuscador.style.display = 'block';
       input.focus();
-      // Si por alguna razón el caché estaba vacío, vuelve a intentar cargarlo al abrir
       if (cacheProductos.length === 0) await cargarCacheProductos();
     }
+  });
+
+  // Prevenir que clics DENTRO de la caja del buscador la cierren
+  cajaBuscador.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
+  // REGLA 1: CERRAR AL HACER CLIC EN CUALQUIER PARTE AFUERA
+  // (Cubre clics a imágenes, categorías, menús o fondo de pantalla)
+  document.addEventListener('click', () => {
+    cerrarBuscador();
+  });
+
+  // REGLA 2: CERRAR SI HACE SCROLL EN LA PÁGINA (Especial para móviles)
+  window.addEventListener('scroll', () => {
+    if (cajaBuscador.style.display === 'block') {
+      cerrarBuscador();
+    }
+  }, { passive: true });
+
+  // Botón "X" de limpiar texto
+  btnLimpiar.addEventListener('click', () => {
+    input.value = '';
+    resultadosDiv.innerHTML = '';
+    btnLimpiar.style.display = 'none';
+    input.focus();
   });
 
   // Filtrado en tiempo real
   input.addEventListener('input', () => {
     const termino = normalizar(input.value.trim());
+    btnLimpiar.style.display = termino.length > 0 ? 'block' : 'none';
 
     if (termino.length < 2) {
       resultadosDiv.innerHTML = '';
@@ -184,7 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     resultadosDiv.innerHTML = '';
     filtrados.forEach(prod => {
-      // Manejo flexible por si la propiedad de la imagen se llama imagenUrl o imagen_url
       const img = prod.imagenUrl || prod.imagen_url || 'https://via.placeholder.com/40';
       const precioNum = parseFloat(prod.precio) || 0;
 
@@ -201,9 +237,9 @@ document.addEventListener('DOMContentLoaded', () => {
       item.onclick = () => {
         agregarAlCarrito(prod.id, prod.nombre, prod.precio, img);
         alert(`¡${prod.nombre} agregado!`);
+        cerrarBuscador(); // Cierra el buscador tras agregar un producto
       };
       resultadosDiv.appendChild(item);
     });
   });
 });
-
