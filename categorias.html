@@ -303,76 +303,7 @@
       </div>
     </div>
 
-    <!-- Botón Flotante para Abrir el Menú Lateral -->
-    <button id="btn-open-sidebar" class="btn-sidebar-toggle" title="Menú de opciones">
-      ☰
-    </button>
+    <script src="sidebar.js"></script>
 
-    <!-- Fondo Oscuro transparente cuando el panel se abre -->
-    <div id="sidebar-overlay" class="sidebar-overlay"></div>
-
-    <!-- Menú Lateral (Sidebar) -->
-    <aside id="sidebar-panel" class="sidebar-panel">
-      <div class="sidebar-header">
-        <h3>Menú</h3>
-        <button id="btn-close-sidebar" class="btn-close">&times;</button>
-      </div>
-
-      <div class="sidebar-content">
-        <div class="sidebar-section">
-          <h4>Categorías</h4>
-          <ul class="sidebar-menu">
-            <li><a href="index.html">🏠 Inicio / Todos</a></li>
-            <li><a href="categorias.html">📋 Categorías</a></li>
-            <li><a href="aceitesylubricantes.html">🛢️ Aceites y Lubricantes</a></li>
-            <li><a href="sistemasdefrenos.html">🛞 Sistemas de Frenos</a></li>
-            <li><a href="motorydistribuicion.html">🏎️ Motor y Distribución</a></li>
-            <li><a href="suspensionyshocks.html">🛵 Suspensión y Shocks</a></li>
-            <li><a href="baterias.html">🔋 Baterías</a></li>
-          </ul>
-        </div>
-
-        <hr class="sidebar-divider">
-
-        <div class="sidebar-section">
-          <h4>Apariencia</h4>
-          <p class="theme-subtitle">Seleccioná un tema:</p>
-          <div class="theme-buttons">
-            <button class="btn-theme theme-light" onclick="setTheme('light')">☀️ Claro</button>
-            <button class="btn-theme theme-dark" onclick="setTheme('dark')">🌙 Oscuro</button>
-            <button class="btn-theme theme-coffee" onclick="setTheme('coffee')">☕ Café</button>
-            <button class="btn-theme theme-blue" onclick="setTheme('blue')">🌊 Azul</button>
-          </div>
-        </div>
-      </div>
-    </aside>
-    
-    <script>
-      const openBtn = document.getElementById('btn-open-sidebar');
-      const closeBtn = document.getElementById('btn-close-sidebar');
-      const sidebar = document.getElementById('sidebar-panel');
-      const overlay = document.getElementById('sidebar-overlay');
-
-      openBtn.addEventListener('click', () => {
-        sidebar.classList.add('active');
-        overlay.classList.add('active');
-      });
-
-      function closeSidebar() {
-        sidebar.classList.remove('active');
-        overlay.classList.remove('active');
-      }
-
-      closeBtn.addEventListener('click', closeSidebar);
-      overlay.addEventListener('click', closeSidebar);
-
-      function setTheme(themeName) {
-        document.documentElement.classList.remove('theme-dark', 'theme-coffee', 'theme-blue');
-        if (themeName !== 'light') {
-          document.documentElement.classList.add('theme-' + themeName);
-        }
-        localStorage.setItem('selectedTheme', themeName);
-      }
-    </script>
 </body>
 </html>
