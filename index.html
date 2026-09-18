@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Casa del Repuesto</title>
@@ -247,61 +246,62 @@
           --bg-sidebar: #5073a9;
           --text-sidebar: #ffffff;
         }
-       #btn-close-sidebar {
-  font-size: 22px !important;
-  width: 40px !important;
-  height: 40px !important;
-  line-height: 1 !important;
-  box-sizing: border-box !important;
-  background: transparent !important;
-  /* Se adapta al color de texto principal del tema activo */
-  color: currentColor !important; 
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
-}
+        #btn-close-sidebar {
+          font-size: 22px !important;
+          width: 40px !important;
+          height: 40px !important;
+          line-height: 1 !important;
+          box-sizing: border-box !important;
+          background: transparent !important;
+          color: currentColor !important; 
+          opacity: 0.8;
+          transition: opacity 0.2s ease;
+        }
 
-#btn-close-sidebar:hover {
-  opacity: 1;
+        #btn-close-sidebar:hover {
+          opacity: 1;
+        }
 
-}
-/* Adaptación de tarjetas al Tema Activo */
-html.theme-dark .card-producto,
-html.theme-dark #modal-carrito > div {
-  background-color: #1e1e1e !important;
-  border-color: #333 !important;
-  color: #fff !important;
-}
+        /* Adaptación de tarjetas al Tema Activo */
+        html.theme-dark .card-producto,
+        html.theme-dark #modal-carrito > div {
+          background-color: #1e1e1e !important;
+          border-color: #333 !important;
+          color: #fff !important;
+        }
 
-html.theme-coffee .card-producto,
-html.theme-coffee #modal-carrito > div {
-  background-color: #3e2723 !important;
-  border-color: #4e342e !important;
-  color: #efebe9 !important;
-}
+        html.theme-coffee .card-producto,
+        html.theme-coffee #modal-carrito > div {
+          background-color: #3e2723 !important;
+          border-color: #4e342e !important;
+          color: #efebe9 !important;
+        }
 
-html.theme-blue .card-producto,
-html.theme-blue #modal-carrito > div {
-  background-color: #3b5998 !important;
-  border-color: #2d4373 !important;
-  color: #fff !important;
-}
+        html.theme-blue .card-producto,
+        html.theme-blue #modal-carrito > div {
+          background-color: #3b5998 !important;
+          border-color: #2d4373 !important;
+          color: #fff !important;
+        }
 
-/* Cambiar color de títulos dentro de las cards en modo oscuro */
-html:not(.theme-light) .card-producto h4 {
-  color: inherit !important;
-}
-
+        html:not(.theme-light) .card-producto h4 {
+          color: inherit !important;
+        }
     </style>
-
 </head>
 <body>
+
+    <!-- Botón Flotante para Abrir el Menú -->
+    <button id="btn-open-sidebar" class="btn-sidebar-toggle" title="Menú de opciones">☰</button>
+
+    <!-- Contenedor donde se cargará dinámicamente sidebar.html -->
+    <div id="sidebar-container"></div>
 
     <img src="logo.jpg" alt="Logo de La Casa del Repuesto" class="logo-negocio">
     
     <h1>La Casa del Repuesto</h1>
     <h2>Todo lo que tu carro necesita en un solo lugar</h2>
     <p>Ofrecemos repuestos de alta calidad con la mejor atención. ¡Cotizá con nosotros!</p>
-
 
     <hr>
 
@@ -312,14 +312,11 @@ html:not(.theme-light) .card-producto h4 {
     <a href="https://wa.me/50233775759?text=Hola,%20busco%20un%20repuesto" target="_blank">
         <button type="button">Cotizar por WhatsApp General</button>
     </a>
-    <script src="carrito.js"></script>
- 
-</div>
+
     <!-- BOTÓN FLOTANTE DEL CARRITO -->
     <div id="boton-carrito-flotante" onclick="document.getElementById('modal-carrito').style.display='block'" style="position:fixed; bottom:20px; right:20px; background:#e63946; color:#fff; padding:12px 20px; border-radius:50px; cursor:pointer; z-index:1000; font-weight:bold; box-shadow:0 4px 10px rgba(0,0,0,0.3);">
       🛒 Carrito (<span id="cant-carrito">0</span>)
     </div>
-    
 
     <!-- MODAL DEL CARRITO -->
     <div id="modal-carrito" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1001;">
@@ -340,7 +337,10 @@ html:not(.theme-light) .card-producto h4 {
         </button>
       </div>
     </div>
-    
-    
+
+    <!-- Carga de Scripts -->
+    <script src="carrito.js"></script>
+    <script src="sidebar.js"></script>
+
 </body>
 </html>
