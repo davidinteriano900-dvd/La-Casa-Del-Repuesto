@@ -18,9 +18,9 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
         }
 
-        .btn-sidebar-wa {
+        .btn-sidebar-map {
             width: 100% !important;
-            background-color: #25d366 !important;
+            background-color: #e63946 !important;
             color: #ffffff !important;
             border: none !important;
             padding: 10px 15px !important;
